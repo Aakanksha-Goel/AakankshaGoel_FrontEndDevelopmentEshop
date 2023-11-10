@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import ShoppingCart from '@mmaterial-ui/icons/ShoppingCart';
-import AppBar from '@material-ui/core/AppBar';
+import ShoppingCart from '@mui/icons-material/ShoppingCart';
+import AppBar from '@mui/material/AppBar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
