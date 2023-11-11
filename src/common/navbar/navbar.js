@@ -78,47 +78,55 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function SearchAppBar() {
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar color="baseAppbar" position="static">
-          <Toolbar
-            sx={{
-              justifyContent: "space-between"
-            }}
-          >
-            <Stack direction="row" alignItems="center">
-              <ShoppingCartIcon />
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ display: { xs: "none", sm: "block" } }}
-              >
-                upGrad E-Shop
-              </Typography>
-            </Stack>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-            <Stack direction="row" alignItems="center">
-                <Link sx={{ display: 'inline', margin: '2%' }} href="#" color="inherit">
-                  Home
-                </Link>
-                <Link sx={{ display: 'inline', margin: '2%', width: '100%' }} href="#" color="inherit">
-                  Add Product
-                </Link>
-              <Button color="outlinedButton" variant="contained">
-                Logout
-              </Button>
-            </Stack>
-          </Toolbar>
-        </AppBar>
-      </Box>
-    </ThemeProvider>
-  );
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar color="baseAppbar" position="static">
+        <Toolbar
+          sx={{
+            justifyContent: "space-between"
+          }}
+        >
+          <Stack direction="row" alignItems="center">
+            <ShoppingCartIcon />
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              upGrad E-Shop
+            </Typography>
+          </Stack>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase 
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+          <Stack sx={{ minWidth:"15%", display: "flex", textAlign:"center" }} direction="row" alignItems="start">
+            <Link
+              sx={{ display: "inline", margin: "2%" }}
+              href="#"
+              color="inherit"
+            >
+              Home
+            </Link>
+            <Link
+              sx={{ display: "inline", margin: "2%", width: "100%" }}
+              href="#"
+              color="inherit"
+            >
+              Add Product
+            </Link>
+            <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
+              Logout
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  </ThemeProvider>
+    );
 }
