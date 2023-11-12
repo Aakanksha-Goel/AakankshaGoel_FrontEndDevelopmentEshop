@@ -75,7 +75,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
-  let loggedIn = false;
+  let loggedIn = true;
   let isAdmin = false;
   if(loggedIn){
     if(isAdmin){
@@ -201,15 +201,6 @@ export default function SearchAppBar() {
               upGrad E-Shop
             </Typography>
           </Stack>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase 
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
           <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
             <Link
               sx={{ display: "inline", margin: "10%", alignSelf: "center" }}

@@ -49,7 +49,8 @@ export default function SignUp() {
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("email"),
-      password: data.get("password")
+      password: data.get("password"),
+      mno: data.get("contact_number")
     });
   };
 
@@ -75,7 +76,7 @@ export default function SignUp() {
           <Box
             component="form"
             onSubmit={handleSubmit}
-            noValidate
+            
             sx={{ mt: 1 }}
           >
             <TextField
@@ -103,6 +104,7 @@ export default function SignUp() {
               fullWidth
               name="email"
               label="Email Address"
+              type="email"
               id="email"
               autoComplete="email"
             />
@@ -147,8 +149,8 @@ export default function SignUp() {
             </Button>
             <Grid  sx={{  display: "block", textAlign: "end" }} container>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/" variant="body2">
+                  {"Already have an account? Sign In"}
                 </Link>
               </Grid>
             </Grid>
