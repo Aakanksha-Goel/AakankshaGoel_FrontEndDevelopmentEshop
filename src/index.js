@@ -1,13 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import {
+  createBrowserRouter, RouterProvider
+} from "react-router-dom";
+import SignIn from './components/signin/signin';
+import SignUp from './components/signup/signup';
 import './index.css';
-import ShoppingCart from '@mui/icons-material/ShoppingCart';
-import AppBar from '@mui/material/AppBar';
+
+const router = createBrowserRouter([{
+    path: "/",
+    element: <SignIn/>
+},
+{
+  path: "/signup",
+  element: <SignUp/>
+}
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    Hi There
+        <RouterProvider router={router} />
   </React.StrictMode>
 );
 

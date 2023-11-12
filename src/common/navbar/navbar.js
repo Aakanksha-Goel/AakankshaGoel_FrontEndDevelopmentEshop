@@ -62,7 +62,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": { 
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -76,6 +75,112 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+  let loggedIn = false;
+  let isAdmin = false;
+  if(loggedIn){
+    if(isAdmin){
+      return (
+        <ThemeProvider theme={theme}>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar color="baseAppbar" position="static">
+            <Toolbar
+              sx={{
+                justifyContent: "space-between"
+              }}
+            >
+              <Stack direction="row" alignItems="center">
+                <ShoppingCartIcon />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: "none", sm: "block" } }}
+                >
+                  upGrad E-Shop
+                </Typography>
+              </Stack>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase 
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </Search>
+              <Stack sx={{ minWidth:"15%", display: "flex", textAlign:"center" }} direction="row" alignItems="start">
+                <Link
+                  sx={{ display: "inline", margin: "2%", alignSelf: "center" }}
+                  href="#"
+                  color="inherit"
+                >
+                  Home
+                </Link>
+                <Link
+                  sx={{ display: "inline", margin: "2%", width: "100%", alignSelf: "center" }}
+                  href="#"
+                  color="inherit"
+                >
+                  Add Product
+                </Link>
+                <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
+                  Logout
+                </Button>
+              </Stack>
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </ThemeProvider>
+        );    
+    }
+    return (
+      <ThemeProvider theme={theme}>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar color="baseAppbar" position="static">
+          <Toolbar
+            sx={{
+              justifyContent: "space-between"
+            }}
+          >
+            <Stack direction="row" alignItems="center">
+              <ShoppingCartIcon />
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: "none", sm: "block" } }}
+              >
+                upGrad E-Shop
+              </Typography>
+            </Stack>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase 
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+            <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
+              <Link
+                sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
+                href="#"
+                color="inherit"
+              >
+                Home
+              </Link>
+              <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
+                Logout
+              </Button>
+            </Stack>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    </ThemeProvider>
+      );  
+  }
+
   return (
     <ThemeProvider theme={theme}>
     <Box sx={{ flexGrow: 1 }}>
@@ -105,28 +210,26 @@ export default function SearchAppBar() {
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
-          <Stack sx={{ minWidth:"15%", display: "flex", textAlign:"center" }} direction="row" alignItems="start">
+          <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
             <Link
-              sx={{ display: "inline", margin: "2%" }}
-              href="#"
+              sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
+              href="/"
               color="inherit"
             >
-              Home
+              Login
             </Link>
             <Link
-              sx={{ display: "inline", margin: "2%", width: "100%" }}
-              href="#"
+              sx={{ display: "inline", margin: "10%", width: "100%", alignSelf: "center" }}
+              href="/signup"
               color="inherit"
             >
-              Add Product
+              Sign Up
             </Link>
-            <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
-              Logout
-            </Button>
           </Stack>
         </Toolbar>
       </AppBar>
     </Box>
   </ThemeProvider>
-    );
+    );  
+
 }
