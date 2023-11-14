@@ -9,6 +9,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
+//import DraggableDialog from '../../common/customdialog/customdialog';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 import {useState} from 'react';
@@ -78,7 +79,7 @@ export default function ProductDetail() {
                             <h1>iPhone 14 </h1>
                         </Grid>
                         <Grid item xs={4}>
-                            <Chip label="Available Quantity: 28" color="primary" variant="outlined" />
+                            <Chip label="Available Quantity: 28" color="primary" />
                         </Grid>
                     </Grid>
                 </Grid>
