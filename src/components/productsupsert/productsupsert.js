@@ -1,51 +1,54 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { useSelector, shallowEqual } from 'react-redux';
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
+import Card from '@mui/material/Card';
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import Avatar from "@mui/material/Avatar";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Grid from "@mui/material/Grid";
-import SearchAppBar from '../../common/navbar/navbar';
-
+import Grid from '@mui/material/Grid';
+import CustomStepper from "../../common/customstepper/customstepper";
+import SearchAppBar from "../../common/navbar/navbar";
+import Button from "@mui/material/Button";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://upgrad.com/">
-        upGrad
-      </Link>{" "}
-      2021
-      {"."}
-    </Typography>
-  );
-}
-
 const defaultTheme = createTheme();
+ 
+export default function ProductUpsert() {    
 
-const SelectUsers = (state) => state.users;
+  function CustomHeader(){
+      return(<Typography component="h1" variant="h5">
+          Add Product
+      </Typography>
+      );
+  }
 
-export default function ProductUpsert() {
+  function CustomButton(){
+    return(<Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      sx={{ mt: 3, mb: 2 }}>
+      Save Product
+    </Button>
+    );
+  }
+  
+  const [age, setAge] = React.useState('');
 
-  const users = useSelector(SelectUsers, shallowEqual);
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    users.forEach((usr) => {
+    /*users.forEach((usr) => {
         if(usr.email === data.get("email") && usr.password === data.get("password")){
             localStorage.setItem("loggedInUserEshop", JSON.stringify(usr));
             console.log('users ', data.get("email"));
@@ -61,34 +64,49 @@ export default function ProductUpsert() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <SearchAppBar/>
-      <Container component="main" maxWidth="xs">
+              <SearchAppBar/>
+              <Grid sx={{padding: "2%"}}justifyContent="center" alignItems="flex-start" container spacing={2}>
+            <CustomHeader/>
+            </Grid>
+            <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center"
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
-          >
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Name"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+              <FormControl style={{minWidth: "100%"}} >
+              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+              <Select
+              required
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={age}
+                label="Category"
+                onChange={handleChange}>
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Manufacturer"
               name="email"
               autoComplete="email"
               autoFocus
@@ -98,34 +116,42 @@ export default function ProductUpsert() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Available Items"
               type="password"
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
+            <TextField
+              margin="normal"
+              required
               fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+              id="email"
+              label="Price"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Image URL"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Product Description"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <CustomButton/>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+          </Container>
     </ThemeProvider>
   );
 }

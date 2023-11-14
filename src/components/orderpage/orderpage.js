@@ -88,7 +88,7 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Name"
               name="email"
               autoComplete="email"
               autoFocus
@@ -98,7 +98,7 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Contact Number"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -108,7 +108,7 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Street"
               name="email"
               autoComplete="email"
               autoFocus
@@ -118,7 +118,7 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="City"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -128,17 +128,16 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="State"
               name="email"
               autoComplete="email"
               autoFocus
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               name="password"
-              label="Password"
+              label="Landmark"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -148,7 +147,7 @@ export default function OrderConfirmationPage() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Zip Code"
               type="password"
               id="password"
               autoComplete="current-password"
