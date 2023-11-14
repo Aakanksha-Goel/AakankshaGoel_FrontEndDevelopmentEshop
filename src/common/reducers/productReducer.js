@@ -1,18 +1,27 @@
 import returnProducts from '../../models/products';
 
-const initialState = returnProducts();
+let seedData = returnProducts();
+
+const initialState = { products: seedData,
+                       activeProduct: null };
   
 export default function productReducer(state = initialState, action) {
     switch (action.type) {
       case 'db/productAdded': {
-        return state.concat(action.payload);
+        state.products.concat(action.payload);
+        return state;
+      }
+      case 'service/productSelected': {
+        state.activeProduct = action.payload;
+        return state;
       }
       case 'db/productModified': {
-        state[action.payload.id] = action.payload;
+        state.products[action.payload.id] = action.payload;
         return state;
       }
       case 'db/productDeleted': {
-        return state.splice(action.payload.id, 1);
+        state.products.splice(action.payload.id, 1);
+        return state;
       }
       default:
         return state;

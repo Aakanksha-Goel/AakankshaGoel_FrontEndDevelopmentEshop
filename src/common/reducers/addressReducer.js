@@ -1,15 +1,21 @@
 import returnAddress from '../../models/address';
 
-const initialState = returnAddress();
+let seedData = returnAddress();
+
+const initialState = { addresses: seedData,
+                       activeAddress: null };
   
 export default function addressReducer(state = initialState, action) {
     switch (action.type) {
       case 'db/addressAdded': {
-        let { address } = action.payload;
-        return state.concat(address);
+        state.addresses.concat(action.payload);
+        return state;
+      }
+      case 'service/addressSelected': {
+        state.activeAddress = action.payload;
+        return state;
       }
       default:
         return state;
     }
 }
-  
