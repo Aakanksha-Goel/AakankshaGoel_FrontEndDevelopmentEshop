@@ -1,6 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { useSelector, shallowEqual } from 'react-redux';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
@@ -35,14 +36,27 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
+const SelectUsers = (state) => state.users;
+
 export default function SignIn() {
+
+  const users = useSelector(SelectUsers, shallowEqual);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password")
-    });
+    users.forEach((usr) => {
+        if(usr.email === data.get("email") && usr.password === data.get("password")){
+            localStorage.setItem("loggedInUserEshop", JSON.stringify(usr));
+            console.log('users ', data.get("email"));
+            console.log('loclhost', JSON.parse(localStorage.getItem('loggedInUserEshop')));
+            window.location.href = '/home';
+        }
+        console.log('loclhost', localStorage.getItem('loggedInUserEshop1')); //null
+      });
+    /*
+    const dispatch = useDispatch();
+    dispatch({ type: 'db/userAdded', payload: users }); */ 
   };
 
   return (

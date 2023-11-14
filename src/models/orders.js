@@ -1,13 +1,5 @@
-let orders = [
-    {
-        id: '0',
-        user: "Soni",
-        product: "10",
-        quantity: 10,
-        address: "fsd"
-    },
-];
+let orders = [];
 
-export default function addOrders(item){
-    orders.push(item);
+export default function returnOrders(){
+    return orders;
 }

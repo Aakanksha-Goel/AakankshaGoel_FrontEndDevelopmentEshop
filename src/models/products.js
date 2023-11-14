@@ -57,30 +57,6 @@ let products = [
     }
 ];
 
-export default function addProducts(item){
-    products.push(item);
-}
-
-export default function editProducts(item){
-    let indx = -1;
-    products.forEach((itemInstance, index) => {
-        if(item.id == itemInstance.id){
-            indx = index;
-        }
-    });
-    if(indx != -1){
-        products[indx] = item;
-    }
-}
-
-export default function deleteProducts(item){
-    let indx = -1;
-    products.forEach((itemInstance, index) => {
-        if(item.id == itemInstance.id){
-            indx = index;
-        }
-    });
-    if(indx != -1){
-        products.splice(indx, 1);
-    }
+export default function returnProducts(){
+    return products;
 }

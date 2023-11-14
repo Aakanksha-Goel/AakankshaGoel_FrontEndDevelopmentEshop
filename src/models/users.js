@@ -19,7 +19,7 @@ let users = [
     }
 ];
 
-export default function addUsers(item){
-    users.push(item);
+export default function returnUsers(){
+    return users;
 }
 

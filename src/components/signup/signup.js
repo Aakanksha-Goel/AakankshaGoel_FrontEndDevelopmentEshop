@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import CssBaseline from "@mui/material/CssBaseline";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -34,7 +35,11 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
+const SelectUsers = (state) => state.users;
+
 export default function SignUp() {
+
+  const users = useSelector(SelectUsers, shallowEqual);
 
   const [value, setValue] = useState('');
 
@@ -44,14 +49,28 @@ export default function SignUp() {
     setValue(result);
   };
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+
+    let newUser = {
+      id: users.length,
+      firstName: data.get("fname"),
+      lastName: data.get("lname"),
       email: data.get("email"),
+      role: 'sales',
       password: data.get("password"),
-      mno: data.get("contact_number")
-    });
+      contactNumber: data.get("contact_number")
+
+    };
+
+    dispatch({ type: 'db/userAdded', payload: newUser }); 
+    localStorage.setItem("loggedInUserEshop", JSON.stringify(newUser));
+
+    window.location.href = '/home';
+    
   };
 
   return (

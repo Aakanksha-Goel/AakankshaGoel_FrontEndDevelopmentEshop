@@ -20,3 +20,7 @@ let categories = [
         value: 40
     }
 ];
+
+export default function returnProductCategories(){
+    return categories;
+}

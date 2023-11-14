@@ -1,4 +1,4 @@
-let addresses = [
+const addresses = [
     {
         id: '0',
         user: "1",
@@ -12,7 +12,7 @@ let addresses = [
     }
 ];
 
-export default function addAddress(item){
-    addresses.push(item);
+export default function returnAddress(){
+    return addresses;
 }
 

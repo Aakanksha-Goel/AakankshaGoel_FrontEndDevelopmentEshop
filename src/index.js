@@ -6,12 +6,17 @@ import {
 import SignIn from './components/signin/signin';
 import SignUp from './components/signup/signup';
 import Products from './components/products/products';
+import ProductDetail from './components/productsdetail/productsdetail';
+import OrderPage from './components/orderpage/orderpage';
+import OrderConfirmationPage from './components/orderconfirmation/orderconfirmation';
+import ProductUpsert from './components/productsupsert/productsupsert';
 import { Provider } from 'react-redux';
+import store from './common/store';
 import './index.css';
 
 const router = createBrowserRouter([{
-    path: "/",
-    element: <SignIn/>
+  path: "/",
+  element: <SignIn/>
 },
 {
   path: "/signup",
@@ -20,13 +25,31 @@ const router = createBrowserRouter([{
 {
   path: "/home",
   element: <Products/>
+},
+{
+  path: "/product/detail/:id",
+  element: <ProductDetail/>
+},
+{
+  path: "/product/upsert/:id/:mode",
+  element: <ProductUpsert/>
+},
+{
+  path: "/order",
+  element: <OrderPage/>
+},
+{
+  path: "/order/confirm",
+  element: <OrderConfirmationPage/>
 }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
   </React.StrictMode>
 );
 
