@@ -14,8 +14,13 @@ import { Provider } from 'react-redux';
 import store from './common/store';
 import './index.css';
 
-const router = createBrowserRouter([{
+const router = createBrowserRouter([
+{
   path: "/",
+  element: <SignIn/>
+},
+{
+  path: "/login",
   element: <SignIn/>
 },
 {

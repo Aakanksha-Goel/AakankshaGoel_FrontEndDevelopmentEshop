@@ -10,6 +10,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -74,11 +75,35 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   }
 }));
 
+const CheckUserLoggedIn = (state) => state.users;
+
 export default function SearchAppBar() {
-  let loggedIn = true;
-  let isAdmin = false;
-  if(loggedIn){
-    if(isAdmin){
+
+  let user = useSelector(CheckUserLoggedIn, shallowEqual);
+  if(sessionStorage.getItem("userCache")){
+      user = JSON.parse(sessionStorage.getItem("userCache"));
+  }
+
+  function LogOutUser(event){
+      event.preventDefault();      
+      let userData = JSON.parse(sessionStorage.getItem("userCache"));
+      if(sessionStorage.getItem("userCache")){
+        userData.activeUser = null;
+      }
+      sessionStorage.setItem("userCache", JSON.stringify(userData));
+      window.location.href = '/';
+  }
+
+  function NavigateHome(event){
+    event.preventDefault();      
+    if(user.activeUser != null){
+      window.location.href = '/home';
+    }      
+    window.location.href = '/';
+  }
+
+  if(user.activeUser != null){
+    if(user.activeUser.role === 'admin'){
       return (
         <ThemeProvider theme={theme}>
         <Box sx={{ flexGrow: 1 }}>
@@ -111,19 +136,20 @@ export default function SearchAppBar() {
               <Stack sx={{ minWidth:"15%", display: "flex", textAlign:"center" }} direction="row" alignItems="start">
                 <Link
                   sx={{ display: "inline", margin: "2%", alignSelf: "center" }}
-                  href="#"
+                  onClick={NavigateHome}
+                  href='#'
                   color="inherit"
                 >
                   Home
                 </Link>
                 <Link
                   sx={{ display: "inline", margin: "2%", width: "100%", alignSelf: "center" }}
-                  href="#"
+                  href="# "
                   color="inherit"
                 >
                   Add Product
                 </Link>
-                <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
+                <Button onClick={LogOutUser} sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
                   Logout
                 </Button>
               </Stack>
@@ -165,12 +191,12 @@ export default function SearchAppBar() {
             <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
               <Link
                 sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
-                href="#"
-                color="inherit"
-              >
+                onClick={NavigateHome}
+                href='#'
+                color="inherit">
                 Home
               </Link>
-              <Button sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
+              <Button onClick={LogOutUser} sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
                 Logout
               </Button>
             </Stack>
@@ -204,7 +230,8 @@ export default function SearchAppBar() {
           <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
             <Link
               sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
-              href="/"
+              onClick={NavigateHome}
+              href='#'
               color="inherit"
             >
               Login
@@ -222,5 +249,4 @@ export default function SearchAppBar() {
     </Box>
   </ThemeProvider>
     );  
-
-}
+        }

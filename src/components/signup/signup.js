@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import SearchAppBar from '../../common/navbar/navbar';
 import {useState} from 'react';
+import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -43,6 +44,8 @@ export default function SignUp() {
 
   const [value, setValue] = useState('');
 
+  let showSnackBar = false;
+
   const handleChange = event => {
     const result = event.target.value.replace(/\D/g, '');
 
@@ -66,8 +69,19 @@ export default function SignUp() {
 
     };
 
-    dispatch({ type: 'db/userAdded', payload: newUser }); 
-    localStorage.setItem("loggedInUserEshop", JSON.stringify(newUser));
+    users.users.forEach((item) => {
+        if(item.email === newUser.email && item.password === newUser.password){
+          showSnackBar = true;
+          return;
+        }else{
+          showSnackBar = false;
+        }
+    });
+
+    users.activeUser = newUser;
+    users.users.push(newUser);
+
+    sessionStorage.setItem("userCache", JSON.stringify(users));
 
     window.location.href = '/home';
     
@@ -76,6 +90,7 @@ export default function SignUp() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <SearchAppBar/>
+      <PositionedSnackbar dismissOrNot={showSnackBar} message={'User Already Exists !!!'} typeOfSnackBar={'error'}/>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -131,6 +146,7 @@ export default function SignUp() {
               margin="normal"
               required
               fullWidth
+              inputProps={{ maxLength: 12, minlength: 8 }}
               name="password"
               label="Password"
               type="password"
@@ -141,6 +157,7 @@ export default function SignUp() {
               margin="normal"
               required
               fullWidth
+              inputProps={{ maxLength: 12, minlength: 8 }}
               name="confirm_password"
               label="Confirm Password"
               type="password"

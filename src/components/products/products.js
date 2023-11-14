@@ -11,6 +11,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProductCard from "../../common/productcard/productcard";
+import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 
 const defaultTheme = createTheme();
 
@@ -50,6 +51,7 @@ export default function Products() {
             alignItems: "center"
           }}
         >
+        <PositionedSnackbar message={'User Logged In'} typeOfSnackBar={'success'}/>
         <ToggleButtonGroup
       value={alignment}
       exclusive

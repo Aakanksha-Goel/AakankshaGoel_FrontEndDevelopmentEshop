@@ -40,23 +40,24 @@ const SelectUsers = (state) => state.users;
 
 export default function SignIn() {
 
-  const users = useSelector(SelectUsers, shallowEqual);
+  let userList = useSelector(SelectUsers, shallowEqual);
+  if(sessionStorage.getItem("userCache")){
+    userList = JSON.parse(sessionStorage.getItem("userCache"));
+  }
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event){
     event.preventDefault();
+    
     const data = new FormData(event.currentTarget);
-    users.forEach((usr) => {
+    userList.users.forEach((usr) => {
         if(usr.email === data.get("email") && usr.password === data.get("password")){
-            localStorage.setItem("loggedInUserEshop", JSON.stringify(usr));
-            console.log('users ', data.get("email"));
-            console.log('loclhost', JSON.parse(localStorage.getItem('loggedInUserEshop')));
+            userList.activeUser = usr;
+            sessionStorage.setItem("userCache", JSON.stringify(userList));    
             window.location.href = '/home';
         }
-        console.log('loclhost', localStorage.getItem('loggedInUserEshop1')); //null
+
       });
-    /*
-    const dispatch = useDispatch();
-    dispatch({ type: 'db/userAdded', payload: users }); */ 
+    
   };
 
   return (

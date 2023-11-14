@@ -6,15 +6,18 @@ const initialState = { users: seedData,
                        activeUser: null };
 
 export default function userReducer(state = initialState, action) {
+
     switch (action.type) {
         case 'db/userAdded': {
-            let { user } = action.payload;
-            state.users.concat(user);
+            state.users.concat(action.payload);
             return state;
         }
         case 'service/userLoggedIn': {
-            let { user } = action.payload;
-            state.activeUser = user;
+            state.activeUser = action.payload;
+            return state;
+        }
+        case 'service/sessionRestore': {
+            state = action.payload;
             return state;
         }
         default:

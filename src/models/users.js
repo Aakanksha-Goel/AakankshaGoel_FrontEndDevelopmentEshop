@@ -5,7 +5,7 @@ let users = [
         lastName: "Anand",
         email: "sanket.admin@xyz.com",
         role: 'admin',
-        password: "tst123",
+        password: "test",
         contactNumber: "tst"
     },
     {
@@ -14,7 +14,7 @@ let users = [
         lastName: "Anand",
         role: 'sales',
         email: "sanket.nonadmin@xyz.com",
-        password: "tst123",
+        password: "test",
         contactNumber: "tst"
     }
 ];
