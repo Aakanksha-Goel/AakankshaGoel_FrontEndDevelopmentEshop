@@ -1,6 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import { useSelector, shallowEqual } from 'react-redux';
 import CssBaseline from "@mui/material/CssBaseline";
 import SearchAppBar from '../../common/navbar/navbar';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -15,27 +16,57 @@ import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 
 const defaultTheme = createTheme();
 
+const SelectProducts = (state) => state.products;
+
 export default function Products() {
 
-    const [alignment, setAlignment] = React.useState('web');
-    const [age, setAge] = React.useState('');
+    let productList = useSelector(SelectProducts, shallowEqual);
+    if(sessionStorage.getItem("productCache")){
+      productList = JSON.parse(sessionStorage.getItem("productCache"));
+    }
 
-    const handleChange1 = (event) => {
-      setAge(event.target.value);
+    function CustomProductCard(){
+      let allActiveProducts = (productList.products.map(prod => {
+        return <ProductCard product={prod} key={prod.id} />
+      }));
+      if(toggleValue === '' && categoryValue === ''){
+        return (<div style={{display: "contents"}} > {allActiveProducts} </div>);        
+      }
+      let filteredActiveProducts = [];
+      if(toggleValue != ''){
+          filteredActiveProducts = productList.products.filter((prods) => {
+            return prods.category === toggleValue;
+          });      
+      }
+      if(categoryValue != ''){
+        let filteredSoFar = (filteredActiveProducts.length > 0) ? (filteredActiveProducts) : (productList.products);
+        if(categoryValue === 'price-high-to-low'){
+          filteredActiveProducts = filteredSoFar.sort((a,b) => (a.price > b.price) ? -1 : ((b.price > a.price) ? 1 : 0));
+        }else if(categoryValue == 'price-low-to-high'){
+          filteredActiveProducts = filteredSoFar.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
+        }else{
+          filteredActiveProducts = filteredSoFar.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
+        }
+      }
+
+      let allActiveFilteredProducts = (filteredActiveProducts.map(prod => {
+        return <ProductCard product={prod} key={prod.id}/>
+      }));
+
+      return (<div style={{display: "contents"}} > {allActiveFilteredProducts} </div>);
+
+    }
+
+    const [toggleValue, setToggle] = React.useState('');
+    const [categoryValue, setCategory] = React.useState('');
+
+    const handleCategoryChange = (event) => {
+      setCategory(event.target.value);
     };  
 
-    const handleChange = (event, newAlignment) => {
-      setAlignment(newAlignment);
+    const handleToggleChange = (event, toggleValue) => {
+      setToggle(event.target.value);
     };  
-
-    const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password")
-    });
-  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -53,15 +84,15 @@ export default function Products() {
         >
         <PositionedSnackbar message={'User Logged In'} typeOfSnackBar={'success'}/>
         <ToggleButtonGroup
-      value={alignment}
+      value={toggleValue}
       exclusive
-      onChange={handleChange}
+      onChange={handleToggleChange}
       aria-label="Platform"
     >
-      <ToggleButton value="web">All</ToggleButton>
-      <ToggleButton value="android">Apparel</ToggleButton>
-      <ToggleButton value="ios">Electronics</ToggleButton>
-      <ToggleButton value="ios1">Personal Care</ToggleButton>
+      <ToggleButton value="">All</ToggleButton>
+      <ToggleButton value="apparel">Apparel</ToggleButton>
+      <ToggleButton value="electronics">Electronics</ToggleButton>
+      <ToggleButton value="personalcare">Personal Care</ToggleButton>
     </ToggleButtonGroup>
     </Box>
       </Container>
@@ -71,30 +102,21 @@ export default function Products() {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={age}
+          value={categoryValue}
           label="Select..."
-          onChange={handleChange1}
+          onChange={handleCategoryChange}
         >
-          <MenuItem value={10}>Default</MenuItem>
-          <MenuItem value={20}>Price High to Low</MenuItem>
-          <MenuItem value={30}>Price Low to High</MenuItem>
-          <MenuItem value={40}>Newest</MenuItem>
+          <MenuItem value="">Default</MenuItem>
+          <MenuItem value="price-high-to-low">Price High to Low</MenuItem>
+          <MenuItem value="price-low-to-high">Price Low to High</MenuItem>
+          <MenuItem value="newest">Newest</MenuItem>
         </Select>
       </FormControl>
     </Box>
     <Box sx={{ margin: 5, display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
-          <ProductCard/>
+      <Box sx={{ minWidth: "100%", padding: 15, display: "flex", flexWrap: "wrap", flexDirection: "row", alignItems: "center" }}>
+        <CustomProductCard />
+      </Box>
     </Box>
     </ThemeProvider>
   );

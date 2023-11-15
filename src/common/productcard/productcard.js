@@ -11,21 +11,20 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
-export default function ProductCard() {
+export default function ProductCard({ product }) {
 
-return(<Card sx={{ maxWidth: 345, marginLeft: "0.2%", marginBottom: "1%" }}>
+return(<Card sx={{ minWidth: '30%', minHeight: "30%", marginLeft: "2%", marginBottom: "1%" }}>
 <CardMedia
-  sx={{ height: 140 }}
-  image="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTDDs0tPjxOZYpy0Ntmf5Fot9hcPh5g_GOkk6V8TsExUq_xNwxk"
-  title="green iguana"
+  sx={{ height: 250 }}
+  image={product.imageUrl}
+  title={product.name}
 />
 <CardContent>
   <Typography gutterBottom variant="h5" component="div">
-    Lizard
+    {product.name}
   </Typography>
   <Typography variant="body2" color="text.secondary">
-    Lizards are a widespread group of squamate reptiles, with over 6,000
-    species, ranging across all continents except Antarctica
+    {product.description}
   </Typography>
 </CardContent>
 <Toolbar
