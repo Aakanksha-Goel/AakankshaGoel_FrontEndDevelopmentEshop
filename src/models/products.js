@@ -17,7 +17,7 @@ let products = [
         price: 11,
         manufacturer: "Apple",
         availableItems: 23,
-        imageUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTDDs0tPjxOZYpy0Ntmf5Fot9hcPh5g_GOkk6V8TsExUq_xNwxk"
+        imageUrl: "https://abdelghafour122.github.io/ecommerce-product-page/static/media/image-product-1.520cc50bd13955f55cb2.jpg"
     },
     {
         id: '2',
@@ -37,7 +37,7 @@ let products = [
         price: 13,
         manufacturer: "Amazon",
         availableItems: 20,
-        imageUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTDDs0tPjxOZYpy0Ntmf5Fot9hcPh5g_GOkk6V8TsExUq_xNwxk"
+        imageUrl: "https://abdelghafour122.github.io/ecommerce-product-page/static/media/image-product-1.520cc50bd13955f55cb2.jpg"
     },
     {
         id: '4',
@@ -57,7 +57,7 @@ let products = [
         price: 15,
         manufacturer: "MI",
         availableItems: 45,
-        imageUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTDDs0tPjxOZYpy0Ntmf5Fot9hcPh5g_GOkk6V8TsExUq_xNwxk"
+        imageUrl: "https://abdelghafour122.github.io/ecommerce-product-page/static/media/image-product-1.520cc50bd13955f55cb2.jpg"
     },
     {
         id: '6',

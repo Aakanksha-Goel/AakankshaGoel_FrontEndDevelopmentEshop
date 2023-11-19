@@ -17,12 +17,53 @@ import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 const defaultTheme = createTheme();
 
 const SelectProducts = (state) => state.products;
+let firstTime = 0;
 
 export default function Products() {
 
     let productList = useSelector(SelectProducts, shallowEqual);
-    if(sessionStorage.getItem("productCache")){
-      productList = JSON.parse(sessionStorage.getItem("productCache"));
+    let prodTransactionType = 'modified ';
+
+    let activeOrder = {};
+    let activeAddress = {}; 
+    
+    try{
+      if(sessionStorage.getItem("productCache")){
+        productList = JSON.parse(sessionStorage.getItem("productCache"));
+      }else{
+        sessionStorage.setItem("productCache", JSON.stringify(productList));
+      }
+        activeOrder = (JSON.parse(sessionStorage.getItem("activeOrder"))==null?[]:sessionStorage.getItem("activeOrder"));
+      activeAddress = (JSON.parse(sessionStorage.getItem('activeAddress'))==null?[]:sessionStorage.getItem('activeAddress'));
+      activeOrder = JSON.parse(activeOrder);
+      activeAddress = JSON.parse(activeAddress);
+    }catch(E){
+
+    }
+
+    console.log(activeOrder);
+    console.log(activeAddress);
+
+    function ConditionalRenderDialog(){
+      if(firstTime > 1){
+        return;
+      }else{
+        firstTime++;
+      }
+      console.log('doc referrer', document.referrer);
+      if(document.referrer == window.location.origin + '/'){
+        return (<PositionedSnackbar message={'User Logged In'} typeOfSnackBar={'success'}/>)
+      }else if(document.referrer == window.location.origin + '/order/confirm'){
+        return (<PositionedSnackbar message={'Order Placed Successfully'} typeOfSnackBar={'success'}/>)
+      }else if(document.referrer == window.location.origin + '/product/upsert'){
+        if(prodTransactionType == 'modified'){
+          return (<PositionedSnackbar message={'Product Modified Succesfully'} typeOfSnackBar={'success'}/>)
+        }else{
+          return (<PositionedSnackbar message={'Product Added Succesfully'} typeOfSnackBar={'success'}/>)
+        }
+      }else{
+        return (<PositionedSnackbar message={'Product Deleted Succesfully'} typeOfSnackBar={'success'}/>) 
+      }
     }
 
     function CustomProductCard(){
@@ -82,7 +123,8 @@ export default function Products() {
             alignItems: "center"
           }}
         >
-        <PositionedSnackbar message={'User Logged In'} typeOfSnackBar={'success'}/>
+        <ConditionalRenderDialog/>
+
         <ToggleButtonGroup
       value={toggleValue}
       exclusive

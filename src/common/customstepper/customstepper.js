@@ -8,7 +8,7 @@ const steps = ['Items', 'Select Address', 'Confirm Order'];
 
 export default function CustomStepper() {
 
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = React.useState(1);
     const [skipped, setSkipped] = React.useState(new Set());
 
     const isStepOptional = (step) => {

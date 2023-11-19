@@ -13,7 +13,7 @@ function PaperComponent(props) {
 }
 
 export default function DraggableDialog() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -21,13 +21,11 @@ export default function DraggableDialog() {
 
   const handleClose = () => {
     setOpen(false);
+    window.location.reload();
   };
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open draggable dialog
-      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -35,19 +33,18 @@ export default function DraggableDialog() {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Subscribe
+          Confirm Deletion of Product!
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
+            Are you sure you want to delete the product?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>Ok</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

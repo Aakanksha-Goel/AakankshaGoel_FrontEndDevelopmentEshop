@@ -16,20 +16,71 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import returnAddress from "../../models/address";
 
 const defaultTheme = createTheme();
- 
-export default function OrderConfirmationPage() {    
-  
-  const [age, setAge] = React.useState('');
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+let seedData = returnAddress();
+
+export default function OrderFillingPage() {    
+
+  const [addressSelected, setAddressSelected] = React.useState((JSON.parse(sessionStorage.getItem('activeAddress'))==null?false:true));
+  const [addressValue, setAddressValue] = React.useState((JSON.parse(sessionStorage.getItem('activeAddress'))==null?returnAddress():JSON.parse(sessionStorage.getItem('activeAddress'))));
+  const [seedValue, setSeedValue] = React.useState((JSON.parse(sessionStorage.getItem('addressCache'))==null?returnAddress():JSON.parse(sessionStorage.getItem('addressCache'))));
+  
+  const HandleAddressChange = (event) => {
+    setAddressSelected(true);
+    sessionStorage.setItem('activeAddress', JSON.stringify(event.target.value));
+    setAddressValue(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  function CustomMenuItem(){
+      let allItems = (seedValue.map(item => {
+      let completeAddress = item.street +' '+ item.city + ' ' + item.state + ' ' + item.landmark + ' '+item.zip_code;
+      return (<MenuItem value={item} key={completeAddress} label={completeAddress}>
+        {completeAddress}
+      </MenuItem>)
+    }));
+    return (<span><FormControl required style={{minWidth: "320px"}} >
+    <InputLabel id="demo-simple-select-label">Select Address</InputLabel><Select
+    labelId="demo-simple-select-label" required
+    id="demo-simple-select"
+    value={addressValue}
+    onChange={HandleAddressChange}
+    label="Select Address"
+  >{allItems}</Select></FormControl></span>);
+  }  
+
+  const handlePrevious = (event) => {
+    window.location.href = './product/detail';
+  }
+
+  const handleNext = (event) => {
+    window.location.href = '/order/confirm';
+  }
+
+  function NextButton() {
+
+  }
+
+  const handleAddressSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    let email = data.get("email");
+    let contact_number = data.get("contact_number");
+    let street = data.get("street");
+    let city = data.get("city");
+    let state = data.get("state");
+    let landmark = data.get("landmark");
+    let zip_code = data.get("zip-code");
+
+    let previous = (seedValue==null)?[]:seedValue;
+    previous.push({id: seedData.length.toString(), street: street, city: city, state: state, landmark: landmark, zip_code: zip_code, contact_number: contact_number});
+    console.log(previous);
+    setSeedValue(previous);
+    sessionStorage.setItem('addressCache', JSON.stringify(previous));
+    window.location.reload();
+
     /*users.forEach((usr) => {
         if(usr.email === data.get("email") && usr.password === data.get("password")){
             localStorage.setItem("loggedInUserEshop", JSON.stringify(usr));
@@ -51,20 +102,9 @@ export default function OrderConfirmationPage() {
               <CustomStepper/>
               </Card>
               <Grid sx={{padding: "1%"}}justifyContent="center" alignItems="flex-start" container spacing={2}>
-              <FormControl style={{minWidth: "30%"}} >
-              <InputLabel id="demo-simple-select-label">Select Address</InputLabel>
-              <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={age}
-          label="Select Address"
-          onChange={handleChange}
-        >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-        </FormControl>
+              
+              
+          <CustomMenuItem/>
         </Grid>
         <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -80,77 +120,73 @@ export default function OrderConfirmationPage() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleAddressSubmit}
             sx={{ mt: 1 }}
           >
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="name"
               label="Name"
-              name="email"
-              autoComplete="email"
+              name="name"
+              autoComplete="name"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="contact_number"
               label="Contact Number"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="contact_number"
+              autoComplete="contact_number"
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="street"
               label="Street"
-              name="email"
-              autoComplete="email"
+              name="street"
+              autoComplete="street"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="city"
               label="City"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="city"
+              autoComplete="city"
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="state"
               label="State"
-              name="email"
-              autoComplete="email"
+              name="state"
+              autoComplete="state"
               autoFocus
             />
             <TextField
               margin="normal"
               fullWidth
-              name="password"
+              name="landmark"
               label="Landmark"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="landmark"
+              autoComplete="landmark"
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="zip-code"
               label="Zip Code"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="zip-code"
+              autoComplete="zip-code"
             />
             <Button
               type="submit"
@@ -164,8 +200,8 @@ export default function OrderConfirmationPage() {
         </Box>
       </Container>
     <Grid sx={{padding: "1%"}} justifyContent="center" alignItems="flex-start" container spacing={2}>
-    <Button variant="text">Back</Button>
-    <Button variant="contained">Next</Button>
+    <Button onClick={handlePrevious} variant="text">Back</Button>
+    <Button onClick={handleNext} disabled={!addressSelected} variant="contained">Next</Button>
 
       </Grid>
     </ThemeProvider>

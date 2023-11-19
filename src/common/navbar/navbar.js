@@ -107,7 +107,7 @@ export default function SearchAppBar() {
       return (
         <ThemeProvider theme={theme}>
         <Box sx={{ flexGrow: 1 }}>
-          <AppBar color="baseAppbar" position="static">
+          <AppBar color="baseAppbar" position="sticky">
             <Toolbar
               sx={{
                 justifyContent: "space-between"
@@ -162,7 +162,7 @@ export default function SearchAppBar() {
     return (
       <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar color="baseAppbar" position="static">
+        <AppBar color="baseAppbar" position="sticky">
           <Toolbar
             sx={{
               justifyContent: "space-between"
@@ -210,7 +210,7 @@ export default function SearchAppBar() {
   return (
     <ThemeProvider theme={theme}>
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="baseAppbar" position="static">
+      <AppBar color="baseAppbar" position="sticky">
         <Toolbar
           sx={{
             justifyContent: "space-between"

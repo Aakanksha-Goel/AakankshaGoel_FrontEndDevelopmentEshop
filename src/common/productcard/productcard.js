@@ -10,10 +10,52 @@ import EditIcon from '@mui/icons-material/Edit';
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import DraggableDialog from '../customdialog/customdialog';
 
 export default function ProductCard({ product }) {
 
+  const [dialog, setDialog] = React.useState(false);
+
+  function handleBuy(){
+    sessionStorage.setItem("activeProduct", JSON.stringify(product));
+    window.location.href = '/product/detail';
+  }
+
+  function handleEdit(){
+    sessionStorage.setItem("activeProduct", JSON.stringify(product));
+    window.location.href = '/product/upsert';
+  }
+
+  function handleDelete(){
+    setDialog(true);
+  }
+
+  function ConditionalDialog(){
+    console.log('dd',dialog);
+    if(dialog){
+      return (<DraggableDialog/>);
+    }
+  }
+
+  function IconsToShow(){
+    let user = JSON.parse(sessionStorage.getItem("userCache"));
+    if(user.activeUser.role == 'admin'){
+      return (<Stack direction="row" alignItems="center">
+      <IconButton onClick={handleEdit} aria-label="edit">
+        <EditIcon />
+      </IconButton>
+      <IconButton onClick={handleDelete} aria-label="delete">
+        <DeleteIcon />
+      </IconButton>
+      </Stack>
+    );
+    }
+    console.log(user.activeUser);
+  }
+
+
 return(<Card sx={{ minWidth: '30%', minHeight: "30%", marginLeft: "2%", marginBottom: "1%" }}>
+  <ConditionalDialog/>
 <CardMedia
   sx={{ height: 250 }}
   image={product.imageUrl}
@@ -33,18 +75,11 @@ return(<Card sx={{ minWidth: '30%', minHeight: "30%", marginLeft: "2%", marginBo
         }}
       >
 <CardActions>
-          <Button sx={{ minWidth: "30%" }} variant="contained">
+          <Button onClick={handleBuy} sx={{ minWidth: "30%" }} variant="contained">
           Buy
         </Button>
 </CardActions>
-<Stack direction="row" alignItems="center">
-  <IconButton aria-label="add to favorites">
-    <EditIcon />
-  </IconButton>
-  <IconButton aria-label="share">
-    <DeleteIcon />
-  </IconButton>
-  </Stack>
+<IconsToShow/>
   </Toolbar>
 </Card>);
 }

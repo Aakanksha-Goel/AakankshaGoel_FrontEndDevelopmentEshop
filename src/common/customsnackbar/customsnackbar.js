@@ -8,9 +8,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 
-export default function PositionedSnackbar({message, typeOfSnackBar, dismissOrNot}) {
+export default function PositionedSnackbar({message, typeOfSnackBar}) {
   const [state, setState] = React.useState({
-    open: dismissOrNot,
+    open: true,
     vertical: 'top',
     horizontal: 'right',
   });
@@ -25,7 +25,7 @@ export default function PositionedSnackbar({message, typeOfSnackBar, dismissOrNo
     <Box sx={{ width: 500 }}>
       <Snackbar 
         anchorOrigin={{ vertical, horizontal }}
-        open={dismissOrNot}
+        open={state.open}
         autoHideDuration={6000}
         onClose={handleClose}
         key={vertical + horizontal}

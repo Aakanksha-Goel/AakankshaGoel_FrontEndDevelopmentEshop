@@ -23,10 +23,13 @@ export default function ProductUpsert() {
 
   function CustomHeader(){
       return(<Typography component="h1" variant="h5">
-          Add Product
+          Add/Modify Product
       </Typography>
       );
   }
+  
+  const [activeProduct, setActiveProduct]= React.useState(JSON.parse(sessionStorage.getItem("activeProduct")));
+  console.log(activeProduct);
 
   function CustomButton(){
     return(<Button
@@ -38,11 +41,45 @@ export default function ProductUpsert() {
     </Button>
     );
   }
+
+  function handleClick(event){
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    let name = data.get("name");
+    let manufacturer = data.get("manufacturer");
+    let items = data.get("items");
+    let price = data.get("price");
+    let imageURL = data.get("imageURL");
+    let description = data.get("description");
+    console.log('fds',name,' ',manufacturer,' ',items,' ',price,' ',imageURL,' ',description);
+    let productNew = {};
+    productNew.name = name;
+    productNew.manufacturer = manufacturer;
+    productNew.items = items;
+    productNew.price = price;
+    productNew.imageURL = imageURL;
+    productNew.description = description;
+    sessionStorage.setItem("activeProduct",JSON.stringify(productNew));
+    let pls = [];
+    try{
+      pls = JSON.parse(sessionStorage.getItem("productCache"))==null?[]:JSON.parse(sessionStorage.getItem("productCache"));
+    }catch(E){
+
+    }
+    let pls1 = (pls, query) => pls.filter(element => element.id != activeProduct.id);
+    pls.push(productNew);
+    sessionStorage.setItem("productCache", JSON.stringify(pls1));
+    window.location.href = '/home';
+  }
   
   const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    let pp = activeProduct;
+    pp.category = event.target.value;
+    setActiveProduct(pp);
+    sessionStorage.setItem("activeProduct",JSON.stringify(pp));
+    //setAge(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -71,6 +108,8 @@ export default function ProductUpsert() {
             <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
+          component="form"
+          onSubmit={handleClick}        
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -81,10 +120,10 @@ export default function ProductUpsert() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Name"
-              name="email"
-              autoComplete="email"
+              id="name"
+              defaultValue={activeProduct.name}
+              name="name"
+              autoComplete="name"
               autoFocus
             />
               <FormControl style={{minWidth: "100%"}} >
@@ -93,61 +132,61 @@ export default function ProductUpsert() {
               required
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={age}
+                value={activeProduct.category}
                 label="Category"
                 onChange={handleChange}>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value="apparel">Apparel</MenuItem>
+                <MenuItem value="electronics">Electronics</MenuItem>
+                <MenuItem value="personalcare">Personal Care</MenuItem>
               </Select>
             </FormControl>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Manufacturer"
-              name="email"
-              autoComplete="email"
+              id="manufacturer"
+              defaultValue={activeProduct.manufacturer}
+              name="manufacturer"
+              autoComplete="manufacturer"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
-              label="Available Items"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name="items"
+              defaultValue={activeProduct.availableItems}
+              type="items"
+              id="items"
+              autoComplete="items"
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Price"
-              name="email"
-              autoComplete="email"
+              id="price"
+              defaultValue={activeProduct.price}
+              name="price"
+              autoComplete="price"
               autoFocus
             />
             <TextField
               margin="normal"
               fullWidth
-              name="password"
+              name="imageURL"
               label="Image URL"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              defaultValue={activeProduct.name}
+              id="imageURL"
+              autoComplete="imageURL"
             />
             <TextField
               margin="normal"
               fullWidth
-              name="password"
+              name="description"
+              defaultValue={activeProduct.description}
               label="Product Description"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="description"
+              autoComplete="decription"
             />
             <CustomButton/>
           </Box>

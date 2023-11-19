@@ -11,7 +11,18 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const defaultTheme = createTheme();
  
 export default function OrderConfirmationPage() {    
-  
+
+  let activeOrder = JSON.parse(JSON.parse(sessionStorage.getItem("activeOrder"))==null?[]:sessionStorage.getItem("activeOrder"));
+  let activeAddress =  JSON.parse(JSON.parse(sessionStorage.getItem('activeAddress'))==null?[]:sessionStorage.getItem('activeAddress'));
+
+  function handleBack(event){
+    window.location.href = '/order';
+  }
+
+  function handlePlaceOrder(event){
+    window.location.href = '/home';
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
               <SearchAppBar/>
@@ -24,19 +35,19 @@ export default function OrderConfirmationPage() {
       <Grid justifyContent="flex-start" item xs={6}>
             <Grid justifyContent="flex-start" alignItems="flex-start" container spacing={2}>
                 <Grid item xs={8}>
-                    <h2>iPhone 14 </h2>
+                    <h2>{activeOrder.name} </h2>
                 </Grid>
                 <Grid item xs={8}>
-                    Quantity: 1
+                    Quantity: {activeOrder.quantity}
                 </Grid>
                 <Grid item xs={8}>
-                    Category: <bold>Footwear</bold>
+                    Category: <b>{activeOrder.category}</b>
                 </Grid>
                 <Grid sx={{overflowWrap: "break-word", overflowY: "clip", maxHeight: "200px"}} item xs={8}>
-                    Product Description
+                    {activeOrder.description}
                 </Grid>
                 <Grid item xs={8} style={{color: "red"}}>
-                  Total Price: &#8377; 3121423
+                  Total Price: &#8377; {activeOrder.orderPrice}
                 </Grid>
             </Grid>
         </Grid>
@@ -47,19 +58,19 @@ export default function OrderConfirmationPage() {
                     <h2>Address Details: </h2>
                 </Grid>
                 <Grid item xs={8}>
-                    Lucknow Home
+                    {activeAddress.street}
                 </Grid>
                 <Grid item xs={8}>
-                    Contact Number: 8302347800
+                    Contact Number: {activeAddress.contactNumber}
                 </Grid>
                 <Grid item xs={8}>
-                    Police Line, Lucknow                
+                    {activeAddress.city}                
                 </Grid>
                 <Grid item xs={8}>
-                    Uttar Pradesh
+                    {activeAddress.state}
                 </Grid>
                 <Grid item xs={8}>
-                    723990
+                    {activeAddress.zip_code}
                 </Grid>
             </Grid>
         </Grid>
@@ -67,8 +78,8 @@ export default function OrderConfirmationPage() {
       </CardContent>
     </Card>
     <Grid sx={{padding: "1%"}} justifyContent="center" alignItems="flex-start" container spacing={2}>
-    <Button variant="text">Back</Button>
-    <Button variant="contained">Place Order</Button>
+    <Button onClick={handleBack} variant="text">Back</Button>
+    <Button onClick={handlePlaceOrder} variant="contained">Place Order</Button>
 
       </Grid>
     </ThemeProvider>
