@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# E-Commerce App v1.0
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A E-Commerce App created in React to demonstrate caoapibilites of React, Redux, JS, HTML, CSS, etc.
 
 ## Existing Users for Testing
 
@@ -16,3 +16,16 @@ password= test
 
 The Backend Course is not yet started, hence instead of the backend, we have used a combination of Redux and Session Storage to simulate the 
 backend behaviour and complete the tasks.
+
+## Serving the Source Code
+
+npm start
+
+## Serving the Source Code
+
+npm run build
+
+## Serving the Build with a Static Server
+
+npm install -g serve
+serve -s build
