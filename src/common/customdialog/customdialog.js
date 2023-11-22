@@ -12,16 +12,11 @@ function PaperComponent(props) {
   return ( <Paper {...props} /> );
 }
 
-export default function DraggableDialog() {
+export default function DraggableDialog({handleDelete}) {
   const [open, setOpen] = React.useState(true);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
-    window.location.reload();
   };
 
   return (
@@ -41,10 +36,10 @@ export default function DraggableDialog() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleDelete} variant="contained">Ok</Button>
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleClose}>Ok</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

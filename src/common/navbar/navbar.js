@@ -10,29 +10,33 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { LS_ESHOP_ACCESS_TOKEN, LS_ESHOP_EMAIL } from "../constants";
+import { ROUTE_PRODUCT_ADD } from "../routes";
 
 const theme = createTheme({
   palette: {
     baseAppbar: {
       main: "#3f51b5",
       light: "#FFFFFF",
-      contrastText: "#FFFFFF"
+      contrastText: "#FFFFFF",
     },
     ochre: {
       main: "#FFFFFF",
       light: "#FFFFFF",
       dark: "#FFFFFF",
-      contrastText: "#000000"
+      contrastText: "#000000",
     },
     outlinedButton: {
       main: "#f50057",
       light: "#FFFFFF",
       dark: "#f50057",
-      contrastText: "#FFFFFF"
-    }
-  }
+      contrastText: "#FFFFFF",
+    },
+  },
 });
 
 const Search = styled("div")(({ theme }) => ({
@@ -40,13 +44,13 @@ const Search = styled("div")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25)
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   maxWidth: "70%",
   width: "30%",
   [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1)
-  }
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -56,12 +60,12 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   pointerEvents: "none",
   display: "flex",
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
-  "& .MuiInputBase-input": { 
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
@@ -69,48 +73,131 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     [theme.breakpoints.up("sm")]: {
       width: "12ch",
       "&:focus": {
-        width: "20ch"
-      }
-    }
-  }
+        width: "20ch",
+      },
+    },
+  },
 }));
 
-const CheckUserLoggedIn = (state) => state.users;
+export default function SearchAppBar(props) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const userState = useSelector((state) => state.users);
 
-export default function SearchAppBar() {
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem(LS_ESHOP_ACCESS_TOKEN));
+    if (localStorage.getItem(LS_ESHOP_EMAIL) && !userState?.activeUser) {
+      fetchSelf(localStorage.getItem(LS_ESHOP_EMAIL));
+    }
+  }, [
+    localStorage.getItem(LS_ESHOP_ACCESS_TOKEN),
+    localStorage.getItem(LS_ESHOP_EMAIL),
+  ]);
 
-  let user = useSelector(CheckUserLoggedIn, shallowEqual);
-  if(sessionStorage.getItem("userCache")){
-      user = JSON.parse(sessionStorage.getItem("userCache"));
+  const fetchSelf = async (email) => {
+    const response = await fetch(
+      `http://0.0.0.0:8080/auth/self?email=${email}`
+    );
+    const result = await response.json();
+    if (result?.user) {
+      dispatch({ type: "service/userLoggedIn", payload: result.user });
+    }
+  };
+
+  function LogOutUser(event) {
+    event.preventDefault();
+    localStorage.clear();
+    navigate("/");
   }
 
-  function LogOutUser(event){
-      event.preventDefault();      
-      let userData = JSON.parse(sessionStorage.getItem("userCache"));
-      if(sessionStorage.getItem("userCache")){
-        userData.activeUser = null;
-      }
-      sessionStorage.setItem("userCache", JSON.stringify(userData));
-      window.location.href = '/';
+  function NavigateHome(event) {
+    event.preventDefault();
+    navigate("/");
   }
 
-  function NavigateHome(event){
-    event.preventDefault();      
-    if(user.activeUser != null){
-      window.location.href = '/home';
-    }      
-    window.location.href = '/';
-  }
-
-  if(user.activeUser != null){
-    if(user.activeUser.role === 'admin'){
+  if (isLoggedIn) {
+    if (userState?.activeUser?.role === "admin") {
       return (
         <ThemeProvider theme={theme}>
+          <Box sx={{ flexGrow: 1 }}>
+            <AppBar color="baseAppbar" position="sticky">
+              <Toolbar
+                sx={{
+                  justifyContent: "space-between",
+                }}
+              >
+                <Stack direction="row" alignItems="center">
+                  <ShoppingCartIcon />
+                  <Typography
+                    variant="h6"
+                    noWrap
+                    component="div"
+                    sx={{ display: { xs: "none", sm: "block" } }}
+                  >
+                    upGrad E-Shop
+                  </Typography>
+                </Stack>
+                <Search onChange={(e) => props?.onChange(e.target.value)}>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </Search>
+                <Stack
+                  sx={{ minWidth: "15%", display: "flex", textAlign: "center" }}
+                  direction="row"
+                  alignItems="start"
+                >
+                  <Link
+                    sx={{
+                      display: "inline",
+                      margin: "2%",
+                      alignSelf: "center",
+                    }}
+                    onClick={NavigateHome}
+                    href="#"
+                    color="inherit"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    sx={{
+                      display: "inline",
+                      margin: "2%",
+                      width: "100%",
+                      alignSelf: "center",
+                    }}
+                    href={ROUTE_PRODUCT_ADD}
+                    color="inherit"
+                  >
+                    Add Product
+                  </Link>
+                  <Button
+                    onClick={LogOutUser}
+                    sx={{ minWidth: "30%" }}
+                    color="outlinedButton"
+                    variant="contained"
+                  >
+                    Logout
+                  </Button>
+                </Stack>
+              </Toolbar>
+            </AppBar>
+          </Box>
+        </ThemeProvider>
+      );
+    }
+    return (
+      <ThemeProvider theme={theme}>
         <Box sx={{ flexGrow: 1 }}>
           <AppBar color="baseAppbar" position="sticky">
             <Toolbar
               sx={{
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               <Stack direction="row" alignItems="center">
@@ -128,28 +215,30 @@ export default function SearchAppBar() {
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
-                <StyledInputBase 
+                <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
                 />
               </Search>
-              <Stack sx={{ minWidth:"15%", display: "flex", textAlign:"center" }} direction="row" alignItems="start">
+              <Stack
+                sx={{ minWidth: "15%", display: "block", textAlign: "end" }}
+                direction="row"
+                alignItems="start"
+              >
                 <Link
-                  sx={{ display: "inline", margin: "2%", alignSelf: "center" }}
+                  sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
                   onClick={NavigateHome}
-                  href='#'
+                  href="#"
                   color="inherit"
                 >
                   Home
                 </Link>
-                <Link
-                  sx={{ display: "inline", margin: "2%", width: "100%", alignSelf: "center" }}
-                  href="# "
-                  color="inherit"
+                <Button
+                  onClick={LogOutUser}
+                  sx={{ minWidth: "30%" }}
+                  color="outlinedButton"
+                  variant="contained"
                 >
-                  Add Product
-                </Link>
-                <Button onClick={LogOutUser} sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
                   Logout
                 </Button>
               </Stack>
@@ -157,15 +246,16 @@ export default function SearchAppBar() {
           </AppBar>
         </Box>
       </ThemeProvider>
-        );    
-    }
-    return (
-      <ThemeProvider theme={theme}>
+    );
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar color="baseAppbar" position="sticky">
           <Toolbar
             sx={{
-              justifyContent: "space-between"
+              justifyContent: "space-between",
             }}
           >
             <Stack direction="row" alignItems="center">
@@ -179,74 +269,35 @@ export default function SearchAppBar() {
                 upGrad E-Shop
               </Typography>
             </Stack>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase 
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-            <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
+            <Stack
+              sx={{ minWidth: "15%", display: "block", textAlign: "end" }}
+              direction="row"
+              alignItems="start"
+            >
               <Link
                 sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
                 onClick={NavigateHome}
-                href='#'
-                color="inherit">
-                Home
+                href="#"
+                color="inherit"
+              >
+                Login
               </Link>
-              <Button onClick={LogOutUser} sx={{ minWidth: "30%" }} color="outlinedButton" variant="contained">
-                Logout
-              </Button>
+              <Link
+                sx={{
+                  display: "inline",
+                  margin: "10%",
+                  width: "100%",
+                  alignSelf: "center",
+                }}
+                href="/signup"
+                color="inherit"
+              >
+                Sign Up
+              </Link>
             </Stack>
           </Toolbar>
         </AppBar>
       </Box>
     </ThemeProvider>
-      );  
-  }
-
-  return (
-    <ThemeProvider theme={theme}>
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="baseAppbar" position="sticky">
-        <Toolbar
-          sx={{
-            justifyContent: "space-between"
-          }}
-        >
-          <Stack direction="row" alignItems="center">
-            <ShoppingCartIcon />
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: { xs: "none", sm: "block" } }}
-            >
-              upGrad E-Shop
-            </Typography>
-          </Stack>
-          <Stack sx={{ minWidth:"15%", display: "block", textAlign:"end" }} direction="row" alignItems="start">
-            <Link
-              sx={{ display: "inline", margin: "10%", alignSelf: "center" }}
-              onClick={NavigateHome}
-              href='#'
-              color="inherit"
-            >
-              Login
-            </Link>
-            <Link
-              sx={{ display: "inline", margin: "10%", width: "100%", alignSelf: "center" }}
-              href="/signup"
-              color="inherit"
-            >
-              Sign Up
-            </Link>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  </ThemeProvider>
-    );  
-        }
+  );
+}
