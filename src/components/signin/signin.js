@@ -1,7 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useSelector, shallowEqual } from 'react-redux';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
@@ -12,57 +11,75 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
-import SearchAppBar from '../../common/navbar/navbar';
+import SearchAppBar from "../../common/navbar/navbar";
+import { Copyright } from "../../common/Copyright";
+import { useState } from "react";
+import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://upgrad.com/">
-        upGrad
-      </Link>{" "}
-      2021
-      {"."}
-    </Typography>
-  );
-}
-
 const defaultTheme = createTheme();
 
-const SelectUsers = (state) => state.users;
-
 export default function SignIn() {
-
-  let userList = useSelector(SelectUsers, shallowEqual);
-  if(sessionStorage.getItem("userCache")){
-    userList = JSON.parse(sessionStorage.getItem("userCache"));
-  }
-
-  function handleSubmit(event){
+  const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
+  const [showSnackBar, setShowSnackBar] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    
     const data = new FormData(event.currentTarget);
-    userList.users.forEach((usr) => {
-        if(usr.email === data.get("email") && usr.password === data.get("password")){
-            userList.activeUser = usr;
-            sessionStorage.setItem("userCache", JSON.stringify(userList));    
-            window.location.href = '/home';
-        }
+    const payload = {
+      username: data.get("email"),
+      password: data.get("password"),
+    };
 
+    setLoader(true);
+    const response = await fetch("http://0.0.0.0:8080/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const result = response.json();
+    result
+      .then((res) => {
+        setLoader(false);
+        if (res?.access_token) {
+          localStorage.setItem("ESHOP_ACCESS_TOKEN", res.access_token);
+          setTimeout(() => navigate("/home"), 1000);
+        } else {
+          setShowSnackBar({
+            show: true,
+            message: "Failed to Login. Try again!",
+            type: "error",
+          });
+        }
+      })
+      .catch((err) => {
+        setLoader(false);
+        setShowSnackBar({
+          show: true,
+          message: "Failed to Login. Try again!",
+          type: "error",
+        });
       });
-    
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <SearchAppBar/>
+      <SearchAppBar />
+      {showSnackBar.show && (
+        <PositionedSnackbar
+          dismissOrNot={true}
+          message={showSnackBar.message}
+          typeOfSnackBar={showSnackBar.type}
+        />
+      )}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -70,7 +87,7 @@ export default function SignIn() {
             marginTop: 8,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -79,11 +96,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -113,6 +126,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              loader={loader || false}
             >
               Sign In
             </Button>
