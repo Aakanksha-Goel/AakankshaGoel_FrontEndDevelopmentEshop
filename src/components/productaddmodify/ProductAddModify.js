@@ -1,15 +1,11 @@
 import * as React from "react";
-import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
-import CustomStepper from "../../common/customstepper/customstepper";
-import SearchAppBar from "../../common/navbar/navbar";
+import SearchAppBar from "../../common/navbar/Navbar";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -19,8 +15,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PRODUCTS, ROUTE_ROOT } from "../../common/routes";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import { ROUTE_LOGIN, ROUTE_ROOT } from "../../common/routes";
+import PositionedSnackbar from "../../common/customsnackbar/CustomSnackbar";
+import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
 
 const defaultTheme = createTheme();
 const INITIAL_STATE = {
@@ -46,6 +43,12 @@ export default function ProductUpsert({ type }) {
     message: "",
     type: "",
   });
+
+  useEffect(() => {
+    if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
+      navigate(ROUTE_LOGIN);
+    }
+  }, [localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)]);
 
   useEffect(() => {
     if (productState?.selectedProduct && isEdit) {

@@ -9,10 +9,10 @@ import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import SearchAppBar from "../../common/navbar/navbar";
+import SearchAppBar from "../../common/navbar/Navbar";
 import { Copyright } from "../../common/Copyright";
 import { useState } from "react";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import PositionedSnackbar from "../../common/customsnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";

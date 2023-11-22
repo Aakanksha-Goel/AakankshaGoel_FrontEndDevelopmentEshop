@@ -3,14 +3,13 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignIn from "./components/signin/SignIn";
 import SignUp from "./components/signup/SignUp";
-import Products from "./components/products/products";
-import ProductDetail from "./components/productsdetail/productsdetail";
-import OrderPage from "./components/orderpage/orderpage";
-import OrderConfirmationPage from "./components/orderconfirmation/orderconfirmation";
+import Products from "./components/products/Products";
+import ProductDetail from "./components/productsdetail/ProductsDetail";
+import OrderPage from "./components/orderpage/OrderPage";
+import OrderConfirmationPage from "./components/orderconfirmation/OrderConfirmation";
 import ProductAddModify from "./components/productaddmodify/ProductAddModify";
 import { Provider } from "react-redux";
 import store from "./common/store";
-import "./index.css";
 import {
   ROUTE_LOGIN,
   ROUTE_ROOT,
@@ -19,8 +18,9 @@ import {
   ROUTE_PRODUCT_ORDER,
   ROUTE_PRODUCT_ORDER_CONFIRM,
   ROUTE_PRODUCT_ADD,
-  ROUTE_PRODUCT_MODIFY
+  ROUTE_PRODUCT_MODIFY,
 } from "./common/routes";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -34,10 +34,6 @@ const router = createBrowserRouter([
   {
     path: ROUTE_SIGN_UP,
     element: <SignUp />,
-  },
-  {
-    path: "/home",
-    element: <Products />,
   },
   {
     path: ROUTE_PRODUCT_DETAIL,

@@ -12,13 +12,13 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
-import SearchAppBar from "../../common/navbar/navbar";
+import SearchAppBar from "../../common/navbar/Navbar";
 import { Copyright } from "../../common/Copyright";
 import { useState } from "react";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import PositionedSnackbar from "../../common/customsnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
+import { LS_ESHOP_ACCESS_TOKEN, LS_ESHOP_EMAIL } from "../../common/constants";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ROUTE_ROOT } from "../../common/routes";
@@ -28,7 +28,6 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loader, setLoader] = useState(false);
   const [showSnackBar, setShowSnackBar] = useState({
     show: false,
     message: "",
@@ -42,7 +41,6 @@ export default function SignIn() {
       password: data.get("password"),
     };
 
-    setLoader(true);
     const response = await fetch("http://0.0.0.0:8080/auth", {
       method: "POST",
       headers: {
@@ -53,21 +51,9 @@ export default function SignIn() {
     const result = response.json();
     result
       .then((res) => {
-        /**
-         * expected response:
-         * {
-         * token: {access_token: string},
-         * user = {
-              "email": string,
-              "firstName": string,
-              "lastName": string,
-              "role": string,
-              "isAdmin": boolean
-          }}
-         */
-        setLoader(false);
         if (res?.token) {
           localStorage.setItem(LS_ESHOP_ACCESS_TOKEN, res.token.access_token);
+          localStorage.setItem(LS_ESHOP_EMAIL, res.user.email);
           dispatch({ type: 'service/userLoggedIn', payload: res.user })
           setTimeout(() => navigate(ROUTE_ROOT), 1000);
         } else {
@@ -79,7 +65,6 @@ export default function SignIn() {
         }
       })
       .catch((err) => {
-        setLoader(false);
         setShowSnackBar({
           show: true,
           message: "Failed to Login. Try again!",

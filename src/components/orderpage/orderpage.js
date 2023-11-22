@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import CustomStepper from "../../common/customstepper/customstepper";
-import SearchAppBar from "../../common/navbar/navbar";
+import CustomStepper from "../../common/customstepper/CustomStepper";
+import SearchAppBar from "../../common/navbar/Navbar";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -22,7 +22,9 @@ import {
   ROUTE_PRODUCT_ORDER_CONFIRM,
 } from "../../common/routes";
 import { useNavigate } from "react-router-dom";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import PositionedSnackbar from "../../common/customsnackbar/CustomSnackbar";
+import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
+import { ROUTE_LOGIN } from "../../common/routes";
 
 const defaultTheme = createTheme();
 
@@ -41,7 +43,15 @@ export default function OrderFillingPage() {
   });
 
   useEffect(() => {
-    fetchAddresses();
+    if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
+      navigate(ROUTE_LOGIN);
+    }
+  }, [localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)]);
+
+  useEffect(() => {
+    if(localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)){
+      fetchAddresses();
+    }
   }, []);
 
   useEffect(() => {

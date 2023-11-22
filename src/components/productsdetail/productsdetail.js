@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import SearchAppBar from "../../common/navbar/navbar";
+import SearchAppBar from "../../common/navbar/Navbar";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_PRODUCT_ORDER } from "../../common/routes";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
+import { ROUTE_LOGIN } from "../../common/routes";
 
 const defaultTheme = createTheme();
 let activeOrder = {};
@@ -29,7 +31,15 @@ export default function ProductDetail() {
   const { order } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    fetchProductById(id);
+    if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
+      navigate(ROUTE_LOGIN);
+    }
+  }, [localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)]);
+
+  useEffect(() => {
+    if (id) {
+      fetchProductById(id);
+    }
   }, [id]);
 
   useEffect(() => {

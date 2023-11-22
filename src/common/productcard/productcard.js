@@ -10,16 +10,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import DraggableDialog from "../customdialog/customdialog";
+import DraggableDialog from "../customdialog/Customdialog";
 import { useDispatch, useSelector } from "react-redux";
 import { generatePath, useNavigate } from "react-router-dom";
 import {
   ROUTE_PRODUCT_DETAIL,
   ROUTE_PRODUCT_MODIFY,
-  ROUTE_ROOT,
 } from "../routes";
 import { useState } from "react";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import PositionedSnackbar from "../customsnackbar/CustomSnackbar";
 
 export default function ProductCard({ product, fetchProducts }) {
   const dispatch = useDispatch();

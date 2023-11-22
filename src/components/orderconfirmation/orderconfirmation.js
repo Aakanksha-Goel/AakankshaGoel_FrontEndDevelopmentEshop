@@ -2,8 +2,8 @@ import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
-import CustomStepper from "../../common/customstepper/customstepper";
-import SearchAppBar from "../../common/navbar/navbar";
+import CustomStepper from "../../common/customstepper/CustomStepper";
+import SearchAppBar from "../../common/navbar/Navbar";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -13,8 +13,11 @@ import { generatePath, useParams } from "react-router-dom";
 import { ROUTE_PRODUCT_ORDER } from "../../common/routes";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
+import PositionedSnackbar from "../../common/customsnackbar/CustomSnackbar";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
+import { ROUTE_LOGIN } from "../../common/routes";
 
 const defaultTheme = createTheme();
 
@@ -31,7 +34,11 @@ export default function OrderConfirmationPage() {
     type: "",
   });
 
-  console.log({ showSnackBar });
+  useEffect(() => {
+    if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
+      navigate(ROUTE_LOGIN);
+    }
+  }, [localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)]);
 
   function handleBack(event) {
     navigate(generatePath(ROUTE_PRODUCT_ORDER, { id }));

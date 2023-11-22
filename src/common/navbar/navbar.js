@@ -10,11 +10,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
-import { useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react"
-import { LS_ESHOP_ACCESS_TOKEN } from "../constants";
+import { useState, useEffect } from "react";
+import { LS_ESHOP_ACCESS_TOKEN, LS_ESHOP_EMAIL } from "../constants";
 import { ROUTE_PRODUCT_ADD } from "../routes";
 
 const theme = createTheme({
@@ -81,26 +81,39 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function SearchAppBar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const userState = useSelector((state) => state.users);
 
   useEffect(() => {
-    setIsLoggedIn(localStorage.getItem(LS_ESHOP_ACCESS_TOKEN))
-  }, [localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)])
+    setIsLoggedIn(localStorage.getItem(LS_ESHOP_ACCESS_TOKEN));
+    if (localStorage.getItem(LS_ESHOP_EMAIL) && !userState?.activeUser) {
+      fetchSelf(localStorage.getItem(LS_ESHOP_EMAIL));
+    }
+  }, [
+    localStorage.getItem(LS_ESHOP_ACCESS_TOKEN),
+    localStorage.getItem(LS_ESHOP_EMAIL),
+  ]);
+
+  const fetchSelf = async (email) => {
+    const response = await fetch(
+      `http://0.0.0.0:8080/auth/self?email=${email}`
+    );
+    const result = await response.json();
+    if (result?.user) {
+      dispatch({ type: "service/userLoggedIn", payload: result.user });
+    }
+  };
 
   function LogOutUser(event) {
     event.preventDefault();
-    localStorage.clear()
-    navigate("/")
+    localStorage.clear();
+    navigate("/");
   }
 
   function NavigateHome(event) {
     event.preventDefault();
-    if (isLoggedIn) {
-      navigate("/home")
-    }else{
-      navigate("/")
-    }
+    navigate("/");
   }
 
   if (isLoggedIn) {

@@ -1,8 +1,4 @@
-import returnProducts from '../../models/products';
-
-let seedData = returnProducts();
-
-const initialState = { products: seedData,
+const initialState = { products: undefined,
                        activeProduct: null, selectedProduct: undefined };
   
 export default function productReducer(state = initialState, action) {
