@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,13 +17,17 @@ import { Copyright } from "../../common/Copyright";
 import { useState } from "react";
 import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ROUTE_ROOT } from "../../common/routes";
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loader, setLoader] = useState(false);
   const [showSnackBar, setShowSnackBar] = useState({
     show: false,
@@ -48,10 +53,23 @@ export default function SignIn() {
     const result = response.json();
     result
       .then((res) => {
+        /**
+         * expected response:
+         * {
+         * token: {access_token: string},
+         * user = {
+              "email": string,
+              "firstName": string,
+              "lastName": string,
+              "role": string,
+              "isAdmin": boolean
+          }}
+         */
         setLoader(false);
-        if (res?.access_token) {
-          localStorage.setItem("ESHOP_ACCESS_TOKEN", res.access_token);
-          setTimeout(() => navigate("/home"), 1000);
+        if (res?.token) {
+          localStorage.setItem(LS_ESHOP_ACCESS_TOKEN, res.token.access_token);
+          dispatch({ type: 'service/userLoggedIn', payload: res.user })
+          setTimeout(() => navigate(ROUTE_ROOT), 1000);
         } else {
           setShowSnackBar({
             show: true,
@@ -126,7 +144,6 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              loader={loader || false}
             >
               Sign In
             </Button>
