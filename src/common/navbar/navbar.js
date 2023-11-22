@@ -79,7 +79,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export default function SearchAppBar(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -138,7 +138,7 @@ export default function SearchAppBar() {
                     upGrad E-Shop
                   </Typography>
                 </Stack>
-                <Search>
+                <Search onChange={(e) => props?.onChange(e.target.value)}>
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>

@@ -16,6 +16,9 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { LS_ESHOP_ACCESS_TOKEN } from "../../common/constants";
 import { ROUTE_LOGIN } from "../../common/routes";
+import Box from "@mui/material/Box";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 const defaultTheme = createTheme();
 let activeOrder = {};
@@ -29,6 +32,8 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(0);
   const [orderPrice, setOrderPrice] = useState(0);
   const { order } = useSelector((state) => state.orders);
+  const [productCategories, setProductCategories] = useState([]);
+  const [category, setCategory] = useState("all");
 
   useEffect(() => {
     if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
@@ -39,8 +44,17 @@ export default function ProductDetail() {
   useEffect(() => {
     if (id) {
       fetchProductById(id);
+      fetchProductCategories()
     }
   }, [id]);
+
+  const fetchProductCategories = async () => {
+    const response = await fetch("http://0.0.0.0:8080/product-categories");
+    const result = await response.json();
+    if (result?.data) {
+      setProductCategories(["all", ...result.data]);
+    }
+  };
 
   useEffect(() => {
     setOrderPrice(order?.orderPrice);
@@ -84,7 +98,7 @@ export default function ProductDetail() {
       <SearchAppBar />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        {/* <Box
+        <Box
           sx={{
             minWidth: "max-content",
             marginTop: 5,
@@ -96,16 +110,22 @@ export default function ProductDetail() {
           <ToggleButtonGroup
             value={category}
             exclusive
-            name="category"
-            onChange={handleChange}
+            onChange={(e) => setCategory(e.target.value)}
             aria-label="category"
           >
-            <ToggleButton value="">All</ToggleButton>
-            <ToggleButton value="apparel">Apparel</ToggleButton>
-            <ToggleButton value="electronics">Electronics</ToggleButton>
-            <ToggleButton value="personal-care">Personal Care</ToggleButton>
+            {productCategories.map((ctg, index) => {
+              return (
+                <ToggleButton
+                  value={ctg}
+                  key={index}
+                  selected={ctg === category}
+                >
+                  {ctg}
+                </ToggleButton>
+              );
+            })}
           </ToggleButtonGroup>
-        </Box> */}
+        </Box>
       </Container>
       <Grid
         sx={{ margin: "2%" }}

@@ -25,6 +25,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
+  const [search, onChange] = useState("")
 
   useEffect(() => {
     if (!localStorage.getItem(LS_ESHOP_ACCESS_TOKEN)) {
@@ -53,7 +54,7 @@ export default function Products() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <SearchAppBar />
+      <SearchAppBar onChange={onChange} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -117,14 +118,15 @@ export default function Products() {
           sort={sort}
           products={products}
           fetchProducts={fetchProducts}
+          search={search}
         />
       </Box>
     </ThemeProvider>
   );
 }
 
-function CustomProductCard({ category, sort, products, fetchProducts }) {
-  let allProducts = products.map((prod) => {
+function CustomProductCard({ category, sort, products, fetchProducts, search }) {
+  let allProducts = products.filter(p => p.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ).map((prod) => {
     return <ProductCard product={prod} key={prod.id} fetchProducts={fetchProducts}/>;
   });
 
@@ -157,7 +159,7 @@ function CustomProductCard({ category, sort, products, fetchProducts }) {
     }
   }
 
-  let allActiveFilteredProducts = filteredActiveProducts.map((prod) => {
+  let allActiveFilteredProducts = filteredActiveProducts.filter(p => p?.name?.toLowerCase().indexOf(search.toLowerCase()) !== -1 ).map((prod) => {
     return <ProductCard product={prod} key={prod.id} />;
   });
 
