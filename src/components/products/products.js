@@ -21,8 +21,8 @@ const defaultTheme = createTheme();
 
 export default function Products() {
   const navigate = useNavigate();
-  const [productCategories, setProductCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [productCategories, setProductCategories] = useState([]);
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
   const [search, onChange] = useState("")
