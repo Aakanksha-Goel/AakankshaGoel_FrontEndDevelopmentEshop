@@ -51,33 +51,6 @@ export default function Products() {
     }
   };
 
-  // let prodTransactionType = 'modified ';
-
-  // let activeOrder = {};
-  // let activeAddress = {};
-
-  // function ConditionalRenderDialog(){
-  //   if(firstTime > 1){
-  //     return;
-  //   }else{
-  //     firstTime++;
-  //   }
-  //   console.log('doc referrer', document.referrer);
-  //   if(document.referrer == window.location.origin + '/'){
-  //     return (<PositionedSnackbar message={'User Logged In'} typeOfSnackBar={'success'}/>)
-  //   }else if(document.referrer == window.location.origin + '/order/confirm'){
-  //     return (<PositionedSnackbar message={'Order Placed Successfully'} typeOfSnackBar={'success'}/>)
-  //   }else if(document.referrer == window.location.origin + '/product/upsert'){
-  //     if(prodTransactionType == 'modified'){
-  //       return (<PositionedSnackbar message={'Product Modified Succesfully'} typeOfSnackBar={'success'}/>)
-  //     }else{
-  //       return (<PositionedSnackbar message={'Product Added Succesfully'} typeOfSnackBar={'success'}/>)
-  //     }
-  //   }else{
-  //     return (<PositionedSnackbar message={'Product Deleted Succesfully'} typeOfSnackBar={'success'}/>)
-  //   }
-  // }
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <SearchAppBar />
@@ -92,8 +65,6 @@ export default function Products() {
             alignItems: "center",
           }}
         >
-          {/* <ConditionalRenderDialog /> */}
-
           <ToggleButtonGroup
             value={category}
             exclusive
@@ -145,15 +116,16 @@ export default function Products() {
           category={category}
           sort={sort}
           products={products}
+          fetchProducts={fetchProducts}
         />
       </Box>
     </ThemeProvider>
   );
 }
 
-function CustomProductCard({ category, sort, products }) {
+function CustomProductCard({ category, sort, products, fetchProducts }) {
   let allProducts = products.map((prod) => {
-    return <ProductCard product={prod} key={prod.id} />;
+    return <ProductCard product={prod} key={prod.id} fetchProducts={fetchProducts}/>;
   });
 
   if (sort === "default" && category === "all") {

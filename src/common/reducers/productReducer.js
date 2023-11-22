@@ -3,7 +3,7 @@ import returnProducts from '../../models/products';
 let seedData = returnProducts();
 
 const initialState = { products: seedData,
-                       activeProduct: null };
+                       activeProduct: null, selectedProduct: undefined };
   
 export default function productReducer(state = initialState, action) {
     switch (action.type) {
@@ -23,6 +23,9 @@ export default function productReducer(state = initialState, action) {
         state.products.splice(action.payload.id, 1);
         return state;
       }
+      case 'service/selectProduct':
+        state.selectedProduct = action.payload;
+        return state;
       default:
         return state;
     }

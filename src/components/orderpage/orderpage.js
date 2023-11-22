@@ -1,128 +1,201 @@
 import * as React from "react";
-import Card from '@mui/material/Card';
+import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Grid from '@mui/material/Grid';
+import Grid from "@mui/material/Grid";
 import CustomStepper from "../../common/customstepper/customstepper";
 import SearchAppBar from "../../common/navbar/navbar";
 import Button from "@mui/material/Button";
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import returnAddress from "../../models/address";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { generatePath, useParams } from "react-router-dom";
+import {
+  ROUTE_PRODUCT_DETAIL,
+  ROUTE_PRODUCT_ORDER_CONFIRM,
+} from "../../common/routes";
+import { useNavigate } from "react-router-dom";
+import PositionedSnackbar from "../../common/customsnackbar/customsnackbar";
 
 const defaultTheme = createTheme();
 
-let seedData = returnAddress();
+export default function OrderFillingPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState();
+  const userState = useSelector((state) => state.users);
+  const {address} = useSelector((state) => state.addresses);
+  const [showSnackBar, setShowSnackBar] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
 
-export default function OrderFillingPage() {    
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
 
-  const [addressSelected, setAddressSelected] = React.useState((JSON.parse(sessionStorage.getItem('activeAddress'))==null?false:true));
-  const [addressValue, setAddressValue] = React.useState((JSON.parse(sessionStorage.getItem('activeAddress'))==null?returnAddress():JSON.parse(sessionStorage.getItem('activeAddress'))));
-  const [seedValue, setSeedValue] = React.useState((JSON.parse(sessionStorage.getItem('addressCache'))==null?returnAddress():JSON.parse(sessionStorage.getItem('addressCache'))));
-  
-  const HandleAddressChange = (event) => {
-    setAddressSelected(true);
-    sessionStorage.setItem('activeAddress', JSON.stringify(event.target.value));
-    setAddressValue(event.target.value);
+  useEffect(() => {
+    setSelectedAddress(address)
+  }, [address])
+
+  const fetchAddresses = async () => {
+    const response = await fetch("http://0.0.0.0:8080/addresses");
+    const result = await response.json();
+    if (result?.data) {
+      setAddresses(
+        result?.data.filter((a) => a.email === userState?.activeUser?.email)
+      );
+    }
   };
 
-  function CustomMenuItem(){
-      let allItems = (seedValue.map(item => {
-      let completeAddress = item.street +' '+ item.city + ' ' + item.state + ' ' + item.landmark + ' '+item.zip_code;
-      return (<MenuItem value={item} key={completeAddress} label={completeAddress}>
-        {completeAddress}
-      </MenuItem>)
-    }));
-    return (<span><FormControl required style={{minWidth: "320px"}} >
-    <InputLabel id="demo-simple-select-label">Select Address</InputLabel><Select
-    labelId="demo-simple-select-label" required
-    id="demo-simple-select"
-    value={addressValue}
-    onChange={HandleAddressChange}
-    label="Select Address"
-  >{allItems}</Select></FormControl></span>);
-  }  
+  const handleAddressChange = (event) => {
+    setSelectedAddress(event.target.value);
+    dispatch({ type: "service/selectAddress", payload: event.target.value });
+  };
 
-  const handlePrevious = (event) => {
-    window.location.href = './product/detail';
+  function CustomMenuItem() {
+    let allItems = addresses.map((item) => {
+      let completeAddress =
+        item.name +
+        " --> " +
+        item.street +
+        " " +
+        item.city +
+        " " +
+        item.state +
+        " " +
+        item.landmark +
+        " " +
+        item.zipcode;
+
+      return (
+        <MenuItem value={item} key={completeAddress} label={completeAddress}>
+          {completeAddress}
+        </MenuItem>
+      );
+    });
+    return (
+      <span>
+        <FormControl required style={{ minWidth: "320px" }}>
+          <InputLabel id="demo-simple-select-label">Select Address</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            required
+            id="demo-simple-select"
+            value={selectedAddress}
+            onChange={handleAddressChange}
+            label="Select Address"
+          >
+            {allItems}
+          </Select>
+        </FormControl>
+      </span>
+    );
   }
 
-  const handleNext = (event) => {
-    window.location.href = '/order/confirm';
-  }
+  const handlePrevious = () => {
+    navigate(generatePath(ROUTE_PRODUCT_DETAIL, { id }));
+  };
 
-  function NextButton() {
+  const handleNext = () => {
+    if(!selectedAddress){
+      setShowSnackBar({
+        show: true,
+        message: "Please select address!",
+        type: "error",
+      });
+      return
+    }
+    navigate(generatePath(ROUTE_PRODUCT_ORDER_CONFIRM, { id }));
+  };
 
-  }
-
-  const handleAddressSubmit = (event) => {
+  const handleAddressSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let email = data.get("email");
-    let contact_number = data.get("contact_number");
-    let street = data.get("street");
-    let city = data.get("city");
-    let state = data.get("state");
-    let landmark = data.get("landmark");
-    let zip_code = data.get("zip-code");
 
-    let previous = (seedValue==null)?[]:seedValue;
-    previous.push({id: seedData.length.toString(), street: street, city: city, state: state, landmark: landmark, zip_code: zip_code, contact_number: contact_number});
-    console.log(previous);
-    setSeedValue(previous);
-    sessionStorage.setItem('addressCache', JSON.stringify(previous));
-    window.location.reload();
+    const payload = {
+      email: userState?.activeUser?.email,
+      name: data.get("name"),
+      contactNumber: data.get("contact_number"),
+      city: data.get("city"),
+      landmark: data.get("landmark"),
+      street: data.get("street"),
+      state: data.get("state"),
+      zipcode: data.get("zipcode"),
+    };
 
-    /*users.forEach((usr) => {
-        if(usr.email === data.get("email") && usr.password === data.get("password")){
-            localStorage.setItem("loggedInUserEshop", JSON.stringify(usr));
-            console.log('users ', data.get("email"));
-            console.log('loclhost', JSON.parse(localStorage.getItem('loggedInUserEshop')));
-            window.location.href = '/home';
+    const response = await fetch("http://0.0.0.0:8080/addresses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const result = response.json();
+    result
+      .then((res) => {
+        if (res?.success) {
+          fetchAddresses();
         }
-        console.log('loclhost', localStorage.getItem('loggedInUserEshop1')); //null
-      });
-    /*
-    const dispatch = useDispatch();
-    dispatch({ type: 'db/userAdded', payload: users }); */ 
+      })
+      .catch((err) => {});
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-              <SearchAppBar/>
-              <Card sx={{ padding: "1%", marginLeft: "3%", marginRight: "3%", marginTop: "3%", minWidth: 275, border: "none", boxShadow: "none" }}>
-              <CustomStepper/>
-              </Card>
-              <Grid sx={{padding: "1%"}}justifyContent="center" alignItems="flex-start" container spacing={2}>
-              
-              
-          <CustomMenuItem/>
-        </Grid>
-        <Container component="main" maxWidth="xs">
+      <SearchAppBar />
+      {showSnackBar.show && (
+        <PositionedSnackbar
+          dismissOrNot={true}
+          message={showSnackBar.message}
+          typeOfSnackBar={showSnackBar.type}
+        />
+      )}
+      <Card
+        sx={{
+          padding: "1%",
+          marginLeft: "3%",
+          marginRight: "3%",
+          marginTop: "3%",
+          minWidth: 275,
+          border: "none",
+          boxShadow: "none",
+        }}
+      >
+        <CustomStepper />
+      </Card>
+      <Grid
+        sx={{ padding: "1%" }}
+        justifyContent="center"
+        alignItems="flex-start"
+        container
+        spacing={2}
+      >
+        <CustomMenuItem />
+      </Grid>
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Typography component="h1" variant="h5">
             Add Address
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleAddressSubmit}
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleAddressSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -183,10 +256,10 @@ export default function OrderFillingPage() {
               margin="normal"
               required
               fullWidth
-              name="zip-code"
+              name="zipcode"
               label="Zip Code"
-              id="zip-code"
-              autoComplete="zip-code"
+              id="zipcode"
+              autoComplete="zipcode"
             />
             <Button
               type="submit"
@@ -199,10 +272,22 @@ export default function OrderFillingPage() {
           </Box>
         </Box>
       </Container>
-    <Grid sx={{padding: "1%"}} justifyContent="center" alignItems="flex-start" container spacing={2}>
-    <Button onClick={handlePrevious} variant="text">Back</Button>
-    <Button onClick={handleNext} disabled={!addressSelected} variant="contained">Next</Button>
-
+      <Grid
+        sx={{ padding: "1%" }}
+        justifyContent="center"
+        alignItems="flex-start"
+        container
+        spacing={2}
+      >
+        <Button onClick={handlePrevious} variant="text">
+          Back
+        </Button>
+        <Button
+          onClick={handleNext}
+          variant="contained"
+        >
+          Next
+        </Button>
       </Grid>
     </ThemeProvider>
   );

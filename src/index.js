@@ -7,11 +7,20 @@ import Products from "./components/products/products";
 import ProductDetail from "./components/productsdetail/productsdetail";
 import OrderPage from "./components/orderpage/orderpage";
 import OrderConfirmationPage from "./components/orderconfirmation/orderconfirmation";
-import ProductUpsert from "./components/productsupsert/productsupsert";
+import ProductAddModify from "./components/productaddmodify/ProductAddModify";
 import { Provider } from "react-redux";
 import store from "./common/store";
 import "./index.css";
-import { ROUTE_LOGIN, ROUTE_ROOT, ROUTE_SIGN_UP, ROUTE_PRODUCT_DETAIL } from "./common/routes";
+import {
+  ROUTE_LOGIN,
+  ROUTE_ROOT,
+  ROUTE_SIGN_UP,
+  ROUTE_PRODUCT_DETAIL,
+  ROUTE_PRODUCT_ORDER,
+  ROUTE_PRODUCT_ORDER_CONFIRM,
+  ROUTE_PRODUCT_ADD,
+  ROUTE_PRODUCT_MODIFY
+} from "./common/routes";
 
 const router = createBrowserRouter([
   {
@@ -35,15 +44,19 @@ const router = createBrowserRouter([
     element: <ProductDetail />,
   },
   {
-    path: "/product/upsert",
-    element: <ProductUpsert />,
+    path: ROUTE_PRODUCT_MODIFY,
+    element: <ProductAddModify type="edit" />,
   },
   {
-    path: "/order",
+    path: ROUTE_PRODUCT_ADD,
+    element: <ProductAddModify type="add" />,
+  },
+  {
+    path: ROUTE_PRODUCT_ORDER,
     element: <OrderPage />,
   },
   {
-    path: "/order/confirm",
+    path: ROUTE_PRODUCT_ORDER_CONFIRM,
     element: <OrderConfirmationPage />,
   },
 ]);

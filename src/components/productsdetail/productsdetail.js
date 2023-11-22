@@ -9,21 +9,33 @@ import Chip from "@mui/material/Chip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { generatePath, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PRODUCT_ORDER } from "../../common/routes";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const defaultTheme = createTheme();
-let orderPrice = 0;
 let activeOrder = {};
 
 export default function ProductDetail() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const [initailized, setInitialized] = useState(false)
+  const [initailized, setInitialized] = useState(false);
   const [product, setProduct] = useState();
   const [quantity, setQuantity] = useState(0);
- 
+  const [orderPrice, setOrderPrice] = useState(0);
+  const { order } = useSelector((state) => state.orders);
+
   useEffect(() => {
     fetchProductById(id);
   }, [id]);
+
+  useEffect(() => {
+    setOrderPrice(order?.orderPrice);
+    setQuantity(order?.orderQuantity);
+  }, [order]);
 
   const fetchProductById = async (id) => {
     const response = await fetch(`http://0.0.0.0:8080/products/${id}`);
@@ -34,28 +46,28 @@ export default function ProductDetail() {
     setInitialized(true);
   };
 
-    const handleChange = (event) => {
-      const { value } = event.target;
-      if(product.availableItems < value){
-        alert("Selected Order Quantity greater than Available Items.");
-        setQuantity(product.availableItems);
-        orderPrice = product.availableItems * product.price;
-        return;
-      }
-      setQuantity(value);
-      orderPrice = value * product.price;
-    };
-
-    const handlePlaceOrder = (event) => {
-      event.preventDefault();
-      activeOrder = product;
-      activeOrder.orderQuantity = quantity;
-      activeOrder.orderPrice = orderPrice;
-      sessionStorage.setItem("activeOrder", JSON.stringify(activeOrder));
-      window.location.href = '/order';
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (product.availableItems < value) {
+      alert("Selected Order Quantity greater than Available Items.");
+      setQuantity(product.availableItems);
+      setOrderPrice(product.availableItems * product.price);
+      return;
+    }
+    setQuantity(value);
+    setOrderPrice(value * product.price);
   };
 
-  if(!initailized) return null
+  const handlePlaceOrder = (event) => {
+    event.preventDefault();
+    activeOrder = product;
+    activeOrder.orderQuantity = quantity;
+    activeOrder.orderPrice = orderPrice;
+    dispatch({ type: "service/addOrder", payload: activeOrder });
+    navigate(generatePath(ROUTE_PRODUCT_ORDER, { id }));
+  };
+
+  if (!initailized) return null;
 
   return (
     <ThemeProvider theme={defaultTheme}>

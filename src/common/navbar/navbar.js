@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react"
 import { LS_ESHOP_ACCESS_TOKEN } from "../constants";
+import { ROUTE_PRODUCT_ADD } from "../routes";
 
 const theme = createTheme({
   palette: {
@@ -157,7 +158,7 @@ export default function SearchAppBar() {
                       width: "100%",
                       alignSelf: "center",
                     }}
-                    href="# "
+                    href={ROUTE_PRODUCT_ADD}
                     color="inherit"
                   >
                     Add Product
