@@ -12,13 +12,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import DraggableDialog from "../customdialog/customdialog";
 import { useSelector } from "react-redux";
+import { generatePath, useNavigate } from "react-router-dom";
+import { ROUTE_PRODUCT_DETAIL } from "../routes";
 
 export default function ProductCard({ product }) {
   const [dialog, setDialog] = React.useState(false);
+  const navigate = useNavigate()
 
-  function handleBuy() {
-    sessionStorage.setItem("activeProduct", JSON.stringify(product));
-    window.location.href = "/product/detail";
+  const handleBuy = (id)=> {
+    navigate(generatePath(ROUTE_PRODUCT_DETAIL, {id}))
   }
 
   function handleEdit() {
@@ -85,7 +87,7 @@ export default function ProductCard({ product }) {
       >
         <CardActions style={{padding: 0}}>
           <Button
-            onClick={handleBuy}
+            onClick={() => handleBuy(product.id)}
             sx={{ minWidth: "30%" }}
             variant="contained"
           >

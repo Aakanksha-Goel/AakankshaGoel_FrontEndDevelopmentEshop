@@ -11,7 +11,7 @@ import ProductUpsert from "./components/productsupsert/productsupsert";
 import { Provider } from "react-redux";
 import store from "./common/store";
 import "./index.css";
-import { ROUTE_LOGIN, ROUTE_ROOT, ROUTE_SIGN_UP } from "./common/routes";
+import { ROUTE_LOGIN, ROUTE_ROOT, ROUTE_SIGN_UP, ROUTE_PRODUCT_DETAIL } from "./common/routes";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     element: <Products />,
   },
   {
-    path: "/product/detail",
+    path: ROUTE_PRODUCT_DETAIL,
     element: <ProductDetail />,
   },
   {
